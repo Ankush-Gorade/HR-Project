@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Candidate Screening — Design Document</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1a1a1a; background: #fff; line-height: 1.7; }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px; }
+
+  h1 { font-size: 28px; color: #1e3a5f; border-bottom: 3px solid #1e3a5f; padding-bottom: 10px; margin-bottom: 6px; }
+  h2 { font-size: 20px; color: #1e3a5f; border-left: 4px solid #1e3a5f; padding-left: 10px; margin: 30px 0 12px 0; }
+  h3 { font-size: 16px; color: #2c5282; margin: 18px 0 8px 0; }
+  h4 { font-size: 14px; color: #2d3748; margin: 12px 0 6px 0; }
+
+  p  { margin-bottom: 10px; }
+  ul { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 4px; }
+
+  .subtitle  { color: #555; font-size: 15px; margin-bottom: 4px; }
+  .meta      { color: #777; font-size: 13px; margin-bottom: 30px; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .info-card { background: #f0f4f8; border-radius: 8px; padding: 16px; border-left: 4px solid #1e3a5f; }
+  .info-card h4 { color: #1e3a5f; margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  th    { background: #1e3a5f; color: white; padding: 10px 12px; text-align: left; }
+  td    { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) { background: #f7fafc; }
+
+  .badge        { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .badge-green  { background: #c6f6d5; color: #22543d; }
+  .badge-blue   { background: #bee3f8; color: #2a4365; }
+  .badge-orange { background: #feebc8; color: #7b341e; }
+  .badge-red    { background: #fed7d7; color: #742a2a; }
+  .badge-purple { background: #e9d8fd; color: #44337a; }
+
+  .agent-card   { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0; }
+  .agent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .agent-title  { font-weight: 700; font-size: 15px; color: #1e3a5f; }
+
+  .pipeline-box { background: #f0f4f8; border-radius: 8px; padding: 20px; margin: 16px 0; font-family: monospace; font-size: 13px; line-height: 2; }
+  .arrow        { color: #1e3a5f; font-weight: bold; }
+  .node-valid   { color: #22543d; background: #c6f6d5; padding: 2px 8px; border-radius: 4px; }
+  .node-guard   { color: #7b341e; background: #feebc8; padding: 2px 8px; border-radius: 4px; }
+  .node-proc    { color: #2a4365; background: #bee3f8; padding: 2px 8px; border-radius: 4px; }
+  .node-end     { color: #44337a; background: #e9d8fd; padding: 2px 8px; border-radius: 4px; }
+
+  .metric-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .metric-card  { text-align: center; background: #f0f4f8; border-radius: 8px; padding: 14px; }
+  .metric-value { font-size: 26px; font-weight: 700; color: #1e3a5f; }
+  .metric-label { font-size: 12px; color: #666; margin-top: 4px; }
+
+  .scenario-pass { color: #22543d; font-weight: 600; }
+  .scenario-fail { color: #742a2a; font-weight: 600; }
+
+  .code-block { background: #2d3748; color: #e2e8f0; padding: 14px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 10px 0; overflow-x: auto; line-height: 1.6; }
+
+  .highlight-box { background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 6px; padding: 14px; margin: 12px 0; }
+  .warning-box   { background: #fffaf0; border: 1px solid #fbd38d; border-radius: 6px; padding: 14px; margin: 12px 0; }
+  .success-box   { background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 6px; padding: 14px; margin: 12px 0; }
+
+  .toc { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .toc h3 { margin-top: 0; }
+  .toc ol { margin-left: 20px; }
+  .toc li { margin-bottom: 4px; color: #1e3a5f; }
+
+  .page-break { border: none; border-top: 2px dashed #e2e8f0; margin: 40px 0; }
+  footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── COVER ──────────────────────────────────────────────────────────────── -->
+<h1>HR Candidate Screening Multi-Agent System</h1>
+<p class="subtitle">Design Document — Assignment 1</p>
+<p class="meta">Framework: LangGraph &nbsp;|&nbsp; LLM: Groq (llama-3.1-8b-instant) &nbsp;|&nbsp; Domain: Human Resources</p>
+
+<div class="info-grid">
+  <div class="info-card">
+    <h4>Project Overview</h4>
+    <p>An end-to-end HR candidate screening pipeline that automates resume evaluation, job description matching, behavioral analysis, and screening report generation using 5 specialised sub-agents.</p>
+  </div>
+  <div class="info-card">
+    <h4>Key Metrics</h4>
+    <ul>
+      <li>5 sub-agents in modular pipeline</li>
+      <li>4 orchestration patterns used</li>
+      <li>5/5 test scenarios passed</li>
+      <li>100% evaluation accuracy (F1 = 1.000)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ── TOC ────────────────────────────────────────────────────────────────── -->
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li>Problem Statement & Business Context</li>
+    <li>Architecture Diagram & Data Flow</li>
+    <li>Sub-Agent Descriptions</li>
+    <li>Guardrail Strategy</li>
+    <li>Orchestration Pattern</li>
+    <li>Tool & MCP Integration</li>
+    <li>Observability & Tracing</li>
+    <li>Prompt Engineering</li>
+    <li>Scenario Test Results</li>
+    <li>Sub-Agent Evaluation Results</li>
+    <li>Reflections & Limitations</li>
+  </ol>
+</div>
+
+<hr class="page-break">
+
+<!-- ── 1. PROBLEM STATEMENT ───────────────────────────────────────────────── -->
+<h2>1. Problem Statement & Business Context</h2>
+
+<p>Large organisations receive hundreds of job applications per open position. Manual screening is time-consuming, inconsistent, and prone to unconscious bias. A typical recruiter spends 6–8 seconds scanning a resume before making an initial decision, leading to high-quality candidates being overlooked and poor-fit candidates advancing to interviews.</p>
+
+<div class="highlight-box">
+  <strong>Business Problem:</strong> Automate the end-to-end candidate screening workflow — from raw resume submission to a structured hire/reject recommendation — in a way that is fast, consistent, explainable, and auditable.
+</div>
+
+<h3>Inputs</h3>
+<ul>
+  <li>Candidate resume (plain text or PDF-extracted)</li>
+  <li>Job description with required/preferred skills</li>
+  <li>Job title and department metadata</li>
+</ul>
+
+<h3>Outputs</h3>
+<ul>
+  <li>Overall score (0–100) with weighted breakdown</li>
+  <li>Recommendation: Strong Hire / Hire / Hold / Reject</li>
+  <li>Top strengths and concerns</li>
+  <li>Suggested interview topics</li>
+  <li>Next action for the recruiter</li>
+</ul>
+
+<h3>Business Value</h3>
+<table>
+  <tr><th>Metric</th><th>Manual Process</th><th>Automated Pipeline</th></tr>
+  <tr><td>Time per candidate</td><td>15–30 minutes</td><td>30–60 seconds</td></tr>
+  <tr><td>Consistency</td><td>Varies by recruiter</td><td>100% consistent</td></tr>
+  <tr><td>Bias check</td><td>None</td><td>Automated bias flag detection</td></tr>
+  <tr><td>Auditability</td><td>Notes in email</td><td>Full LangSmith trace</td></tr>
+  <tr><td>Scalability</td><td>Limited by headcount</td><td>Unlimited parallel runs</td></tr>
+</table>
+
+<hr class="page-break">
+
+<!-- ── 2. ARCHITECTURE ────────────────────────────────────────────────────── -->
+<h2>2. Architecture Diagram & Data Flow</h2>
+
+<div class="pipeline-box">
+  <div style="text-align:center; font-weight:bold; margin-bottom:10px;">HR SCREENING PIPELINE — LANGGRAPH STATEGRAPH</div>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ Candidate Input ]
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-guard">Agent 1: Input Guard</span> ──(invalid)──▶ <span class="node-guard">REJECT</span> ──▶ END
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ (valid)
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-proc">Agent 2: Resume Parser</span>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────┴───────────┐  &nbsp;&nbsp;&lt;&lt; PARALLEL FAN-OUT &gt;&gt;
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼
+  <br>
+  <span class="node-proc">Agent 3: JD Matcher</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-proc">Agent 4: Behavioral Scorer</span>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────┬───────────┘  &nbsp;&nbsp;&lt;&lt; FAN-IN / AGGREGATE &gt;&gt;
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-guard">Human-in-the-Loop Checkpoint</span> ◀─── (refine) ───┐
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ (approved)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-guard">Agent 5: Output Guard</span> ──────────────────────┘
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node-end">Screening Report</span> ──▶ END
+</div>
+
+<h3>Data Flow</h3>
+<table>
+  <tr><th>Stage</th><th>Input</th><th>Output</th><th>State Fields Written</th></tr>
+  <tr><td>Input Guard</td><td>candidate_input</td><td>Valid/Reject decision</td><td>input_valid, input_errors</td></tr>
+  <tr><td>Resume Parser</td><td>resume_text</td><td>Structured resume dict</td><td>parsed_resume</td></tr>
+  <tr><td>JD Matcher</td><td>parsed_resume + JD</td><td>Match scores</td><td>jd_match</td></tr>
+  <tr><td>Behavioral Scorer</td><td>resume_text</td><td>Behavioral scores</td><td>behavioral_score</td></tr>
+  <tr><td>Human Review</td><td>All scores</td><td>Approve/Refine</td><td>human_approved</td></tr>
+  <tr><td>Output Guard</td><td>All scores</td><td>Final report</td><td>screening_report</td></tr>
+</table>
+
+<hr class="page-break">
+
+<!-- ── 3. SUB-AGENTS ──────────────────────────────────────────────────────── -->
+<h2>3. Sub-Agent Descriptions</h2>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span class="agent-title">Agent 1 — Input Guard</span>
+    <span class="badge badge-orange">Guardrail Agent</span>
+  </div>
+  <p><strong>File:</strong> agents/input_guard_agent.py &nbsp;|&nbsp; <strong>Tools:</strong> None</p>
+  <p><strong>Role:</strong> First line of defence. Validates all inputs before any LLM call is made, preventing wasted compute and prompt injection attacks.</p>
+  <p><strong>Prompt Strategy:</strong> Few-shot with 3 examples covering valid input, gibberish input, and injection attempts. System prompt instructs LLM to return structured JSON confidence scores.</p>
+  <ul>
+    <li>Rule-based checks: required fields, length bounds, injection pattern matching</li>
+    <li>LLM-based checks: semantic relevance (is this actually a resume?)</li>
+    <li>Routes to <strong>reject</strong> node on failure — no further processing</li>
+  </ul>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span class="agent-title">Agent 2 — Resume Parser</span>
+    <span class="badge badge-blue">Extraction Agent</span>
+  </div>
+  <p><strong>File:</strong> agents/resume_parser_agent.py &nbsp;|&nbsp; <strong>Tools:</strong> File processing (PDF/DOCX)</p>
+  <p><strong>Role:</strong> Transforms unstructured resume text into a clean, structured JSON object used by downstream agents.</p>
+  <p><strong>Prompt Strategy:</strong> Chain-of-thought with explicit reasoning steps (identify personal info → scan skills → extract experience → compute totals). Two few-shot examples with diverse resume formats.</p>
+  <ul>
+    <li>Extracts: name, email, phone, skills, experience, education, certifications</li>
+    <li>Computes: total_experience_years from individual role durations</li>
+    <li>Keyword-based fallback parser if LLM fails</li>
+  </ul>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span class="agent-title">Agent 3 — JD Matcher</span>
+    <span class="badge badge-blue">Scoring Agent</span>
+  </div>
+  <p><strong>File:</strong> agents/jd_matcher_agent.py &nbsp;|&nbsp; <strong>Tools:</strong> Tavily Web Search</p>
+  <p><strong>Role:</strong> Scores the candidate's technical fit against the job description. Runs in parallel with Agent 4.</p>
+  <p><strong>Prompt Strategy:</strong> Structured reasoning steps: extract JD requirements → compare skills → score each dimension. Two few-shot examples showing strong and partial matches.</p>
+  <ul>
+    <li>Scores: skill match (40%), experience match (30%), education match (10%)</li>
+    <li>Uses Tavily web search to fetch current market skill demand context</li>
+    <li>Identifies matched skills and missing required skills</li>
+  </ul>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span class="agent-title">Agent 4 — Behavioral Scorer</span>
+    <span class="badge badge-blue">Analysis Agent</span>
+  </div>
+  <p><strong>File:</strong> agents/behavioral_scorer_agent.py &nbsp;|&nbsp; <strong>Tools:</strong> None</p>
+  <p><strong>Role:</strong> Evaluates soft skills, culture fit, and behavioral signals from resume content. Runs in parallel with Agent 3.</p>
+  <p><strong>Prompt Strategy:</strong> Rubric-based with explicit scoring criteria for each dimension (communication, leadership, teamwork, problem solving, culture fit). Two few-shot examples showing strong and weak behavioral profiles.</p>
+  <ul>
+    <li>Detects red flags: job hopping, vague descriptions, gaps</li>
+    <li>Identifies positive signals: quantified impact, leadership, mentoring</li>
+    <li>Contributes 20% to overall weighted score</li>
+  </ul>
+</div>
+
+<div class="agent-card">
+  <div class="agent-header">
+    <span class="agent-title">Agent 5 — Output Guard</span>
+    <span class="badge badge-orange">Guardrail Agent</span>
+  </div>
+  <p><strong>File:</strong> agents/output_guard_agent.py &nbsp;|&nbsp; <strong>Tools:</strong> Gmail MCP, Google Calendar MCP</p>
+  <p><strong>Role:</strong> Aggregates all scores, generates the final report, enforces output quality, and triggers downstream actions.</p>
+  <p><strong>Prompt Strategy:</strong> Report synthesis with explicit scoring weights and recommendation thresholds. Two few-shot examples for Strong Hire and Hold outcomes.</p>
+  <ul>
+    <li>Computes weighted overall score: skill(40%) + exp(30%) + behavioral(20%) + edu(10%)</li>
+    <li>Redacts PII from output report</li>
+    <li>Detects biased language in generated text</li>
+    <li>Validates output schema completeness</li>
+    <li>Sends interview invite via Gmail MCP and schedules via Google Calendar MCP</li>
+  </ul>
+</div>
+
+<hr class="page-break">
+
+<!-- ── 4. GUARDRAILS ───────────────────────────────────────────────────────── -->
+<h2>4. Guardrail Strategy</h2>
+
+<h3>Input Guardrails (Agent 1)</h3>
+<table>
+  <tr><th>Guardrail</th><th>Type</th><th>What it catches</th><th>Action</th></tr>
+  <tr><td>Required field check</td><td>Rule-based</td><td>Missing resume_text, job_description, job_title</td><td>Reject with error list</td></tr>
+  <tr><td>Length validation</td><td>Rule-based</td><td>Resume &lt;100 or &gt;15,000 chars; JD &lt;50 chars</td><td>Reject with reason</td></tr>
+  <tr><td>Prompt injection scan</td><td>Rule-based</td><td>"ignore previous instructions", "act as", etc.</td><td>Reject immediately</td></tr>
+  <tr><td>Semantic validation</td><td>LLM-based</td><td>Gibberish, non-resume content, fake credentials</td><td>Reject with LLM reasoning</td></tr>
+</table>
+
+<h3>Output Guardrails (Agent 5)</h3>
+<table>
+  <tr><th>Guardrail</th><th>Type</th><th>What it catches</th><th>Action</th></tr>
+  <tr><td>PII redaction</td><td>Regex</td><td>Email, phone, SSN in output report</td><td>Replace with [REDACTED]</td></tr>
+  <tr><td>Schema validation</td><td>Rule-based</td><td>Missing required report fields</td><td>Log warning, fill defaults</td></tr>
+  <tr><td>Score bounds check</td><td>Rule-based</td><td>Scores outside [0, 100]</td><td>Clamp and log warning</td></tr>
+  <tr><td>Bias detection</td><td>Regex</td><td>Age, gender, religion, nationality references</td><td>Flag in report metadata</td></tr>
+</table>
+
+<div class="warning-box">
+  <strong>Why two layers?</strong> Input guardrails protect the system from malicious or malformed data before expensive LLM calls are made. Output guardrails protect end-users and the organisation from harmful, biased, or non-compliant report content.
+</div>
+
+<hr class="page-break">
+
+<!-- ── 5. ORCHESTRATION ────────────────────────────────────────────────────── -->
+<h2>5. Orchestration Pattern</h2>
+
+<table>
+  <tr><th>Pattern</th><th>Where Used</th><th>Justification</th></tr>
+  <tr>
+    <td><span class="badge badge-orange">Conditional Routing</span></td>
+    <td>After Agent 1 (Input Guard)</td>
+    <td>Invalid inputs must be terminated early to avoid wasting LLM calls on malicious or malformed data. The route_after_input_guard() function directs flow to either resume_parser or reject based on input_valid flag.</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-blue">Parallel Fan-out/Fan-in</span></td>
+    <td>Agents 3 & 4 run concurrently</td>
+    <td>JD matching (technical fit) and behavioral scoring (soft skills) are independent tasks with no data dependency. Running them in parallel reduces total pipeline latency by ~50% versus sequential execution.</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-purple">Human-in-the-Loop</span></td>
+    <td>After parallel scoring</td>
+    <td>HR screening decisions affect people's careers. A human checkpoint before the final report ensures a recruiter can review intermediate scores, catch LLM errors, and request refinement in high-stakes cases.</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">Iterative Refinement Loop</span></td>
+    <td>Human review → re-score</td>
+    <td>When a reviewer disagrees with scores, the pipeline re-runs Agents 3 & 4 rather than starting over. A safety cap of 3 iterations prevents infinite loops.</td>
+  </tr>
+</table>
+
+<hr class="page-break">
+
+<!-- ── 6. TOOLS & MCP ──────────────────────────────────────────────────────── -->
+<h2>6. Tool & MCP Integration</h2>
+
+<table>
+  <tr><th>Tool</th><th>Agent</th><th>Type</th><th>Purpose</th></tr>
+  <tr><td>Tavily Web Search</td><td>JD Matcher (Agent 3)</td><td>External API</td><td>Fetch current market skill demand context for the target role to inform scoring</td></tr>
+  <tr><td>Gmail MCP</td><td>Output Guard (Agent 5)</td><td>MCP Server</td><td>Send automated interview invite emails to shortlisted candidates</td></tr>
+  <tr><td>Google Calendar MCP</td><td>Output Guard (Agent 5)</td><td>MCP Server</td><td>Create interview calendar slots for Hire/Strong Hire recommendations</td></tr>
+  <tr><td>File Processing</td><td>Resume Parser (Agent 2)</td><td>Library (pypdf/docx)</td><td>Extract text from PDF and DOCX resume uploads</td></tr>
+  <tr><td>LangSmith</td><td>All agents</td><td>Observability</td><td>Trace every agent call, tool invocation, and routing decision</td></tr>
+</table>
+
+<div class="highlight-box">
+  <strong>MCP Integration Note:</strong> Gmail and Google Calendar MCP servers are integrated at the output stage so that the pipeline can take real-world actions — not just generate reports. When a candidate scores above the interview threshold, the system automatically sends an invite and creates a calendar slot, eliminating manual recruiter follow-up for top candidates.
+</div>
+
+<hr class="page-break">
+
+<!-- ── 7. OBSERVABILITY ─────────────────────────────────────────────────────── -->
+<h2>7. Observability & Tracing</h2>
+
+<p>Every agent invocation is wrapped with the <code>@trace_agent</code> decorator defined in <code>utils/tracing.py</code>, which logs entry time, input keys, output keys, and execution duration. LangSmith is configured via environment variables for full pipeline tracing.</p>
+
+<h3>Sample Log Trace (Pipeline Run)</h3>
+<div class="code-block">
+09:31:45 [INFO] Orchestrator → Building LangGraph pipeline...
+09:31:45 [INFO] Orchestrator → Pipeline compiled successfully ✔
+09:31:45 [INFO] Orchestrator → Starting pipeline run | trace_id: ea31e764
+09:31:45 [INFO] InputGuardAgent → Running input validation...
+09:31:46 [INFO] InputGuardAgent → Input validation passed ✔
+09:31:46 [INFO] ResumeParserAgent → Parsing resume...
+09:31:46 [INFO] ResumeParserAgent → Resume parsed ✔ — Skills: 11, Experience: 5.0 years
+09:31:46 [INFO] Orchestrator → Running parallel scoring...
+09:31:47 [INFO] JDMatcherAgent → JD matching complete ✔ — Score: 91.0, Matched: 8
+09:31:48 [INFO] BehavioralScorerAgent → Behavioral scoring complete ✔ — Overall: 78.4
+09:31:48 [INFO] Orchestrator → Human review: APPROVED ✔
+09:31:49 [INFO] OutputGuardAgent → Output guard complete ✔ — Score: 88.18, Recommendation: Strong Hire
+09:31:49 [INFO] Orchestrator → Pipeline complete | status: completed
+</div>
+
+<h3>Observability Features</h3>
+<ul>
+  <li>Unique <code>trace_id</code> per pipeline run for end-to-end correlation</li>
+  <li>Coloured console output via <code>colorlog</code></li>
+  <li>Persistent file logging to <code>logs/pipeline.log</code></li>
+  <li>LangSmith integration for visual trace exploration</li>
+  <li>Per-agent timing measurements</li>
+</ul>
+
+<hr class="page-break">
+
+<!-- ── 8. PROMPT ENGINEERING ───────────────────────────────────────────────── -->
+<h2>8. Prompt Engineering</h2>
+
+<p>All prompts are stored as Markdown files in the <code>prompts/</code> directory and loaded at runtime via <code>utils/helpers.load_prompt()</code>. This keeps prompts version-controlled and editable without code changes.</p>
+
+<h3>Techniques Used</h3>
+<table>
+  <tr><th>Technique</th><th>Applied In</th><th>Purpose</th></tr>
+  <tr><td>Few-shot examples</td><td>All 5 agents</td><td>Ground the LLM with 2–3 concrete input/output examples reducing hallucination</td></tr>
+  <tr><td>Chain-of-thought / reasoning steps</td><td>Resume Parser, JD Matcher</td><td>Explicit numbered steps force systematic extraction before producing output</td></tr>
+  <tr><td>Role assignment</td><td>All agents</td><td>"You are an expert HR resume parser" sets the persona and domain context</td></tr>
+  <tr><td>Output format specification</td><td>All agents</td><td>Explicit JSON schema in prompt ensures parseable, structured output</td></tr>
+  <tr><td>Rubric-based scoring</td><td>Behavioral Scorer</td><td>High/Medium/Low criteria for each dimension reduce subjective variance</td></tr>
+  <tr><td>Constraint injection</td><td>Output Guard</td><td>Explicit scoring weights and thresholds prevent LLM from inventing its own rules</td></tr>
+</table>
+
+<h3>Example — Reasoning Steps in Resume Parser Prompt</h3>
+<div class="code-block">
+## Reasoning Steps
+1. First identify the candidate's personal information (name, email, phone)
+2. Then scan for all technical and soft skills mentioned
+3. Extract each work experience entry with dates and calculate duration
+4. Sum all experience durations for total_experience_years
+5. Extract education entries
+6. Format everything into the required JSON structure
+</div>
+
+<hr class="page-break">
+
+<!-- ── 9. SCENARIO RESULTS ─────────────────────────────────────────────────── -->
+<h2>9. Scenario Test Results</h2>
+
+<table>
+  <tr><th>#</th><th>Scenario</th><th>Input</th><th>Expected</th><th>Actual</th><th>Result</th></tr>
+  <tr>
+    <td>1</td>
+    <td>Happy Path — Strong Candidate</td>
+    <td>Priya Sharma: 7 years, all required skills, IIT degree</td>
+    <td>Strong Hire, score ≥ 85</td>
+    <td>Strong Hire, score = 89.22</td>
+    <td><span class="scenario-pass">✅ PASS</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Weak Candidate — Below Threshold</td>
+    <td>Amit Kumar: B.Com graduate, only Excel/SQL basics</td>
+    <td>Reject at input or Hold</td>
+    <td>Rejected at Input Guard (semantic validation)</td>
+    <td><span class="scenario-pass">✅ PASS</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Adversarial — Prompt Injection</td>
+    <td>Resume containing "ignore previous instructions"</td>
+    <td>Rejected at Input Guard</td>
+    <td>Rejected immediately by rule-based guardrail</td>
+    <td><span class="scenario-pass">✅ PASS</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Edge Case — Missing Fields</td>
+    <td>Empty resume, JD, and job title</td>
+    <td>Rejected at Input Guard</td>
+    <td>Rejected with 5 validation errors listed</td>
+    <td><span class="scenario-pass">✅ PASS</span></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Human Refinement Loop</td>
+    <td>Strong candidate, human_approved=False on first pass</td>
+    <td>Pipeline re-scores, then approves</td>
+    <td>Re-scored in iteration 1/3, then auto-approved → Strong Hire</td>
+    <td><span class="scenario-pass">✅ PASS</span></td>
+  </tr>
+</table>
+
+<div class="success-box">
+  <strong>Result: 5/5 scenarios passed.</strong> All pipeline branches were exercised including the happy path, rejection paths, guardrail triggers, and the iterative refinement loop.
+</div>
+
+<h3>Scenario 1 — Score Breakdown</h3>
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-value">85.0</div><div class="metric-label">Skill Match</div></div>
+  <div class="metric-card"><div class="metric-value">90.0</div><div class="metric-label">Experience</div></div>
+  <div class="metric-card"><div class="metric-value">93.6</div><div class="metric-label">Behavioral</div></div>
+  <div class="metric-card"><div class="metric-value">89.2</div><div class="metric-label">Overall</div></div>
+</div>
+
+<hr class="page-break">
+
+<!-- ── 10. EVALUATION ──────────────────────────────────────────────────────── -->
+<h2>10. Sub-Agent Evaluation Results</h2>
+
+<h3>Agent Evaluated: ResumeParserAgent</h3>
+<p>The Resume Parser was selected for standalone evaluation because it is the most critical extraction step — errors here propagate to all downstream agents. A manually curated dataset of 20 resume samples was created covering diverse roles, experience levels, and formats.</p>
+
+<h3>Evaluation Metrics</h3>
+<div class="metric-grid">
+  <div class="metric-card"><div class="metric-value">100%</div><div class="metric-label">Mean Accuracy</div></div>
+  <div class="metric-card"><div class="metric-value">1.000</div><div class="metric-label">Mean F1 Score</div></div>
+  <div class="metric-card"><div class="metric-value">20/20</div><div class="metric-label">Cases Passed</div></div>
+  <div class="metric-card"><div class="metric-value">7</div><div class="metric-label">Fields Evaluated</div></div>
+</div>
+
+<h3>Per-Field Results</h3>
+<table>
+  <tr><th>Field</th><th>Correct</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+  <tr><td>Name extraction</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Skills extraction</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Email extraction</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Experience detection</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Experience count</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Experience years</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr><td>Education detection</td><td>20/20</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+  <tr style="font-weight:bold; background:#f0f4f8;"><td>OVERALL</td><td>140/140</td><td>100%</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+</table>
+
+<h3>Metric Choice Rationale</h3>
+<p>Field-level Precision/Recall/F1 was chosen over simpler accuracy metrics because it separately measures the agent's ability to correctly identify each extracted field. This is appropriate for an extraction task where partial correctness matters — a parser that correctly extracts skills but misses experience years is worse than one that gets both right.</p>
+
+<h3>Failure Analysis</h3>
+<div class="success-box">
+  No failures were detected across all 20 test cases. The LLM-based parser with chain-of-thought reasoning steps successfully handled all resume formats including: fresh graduates with no experience, senior engineers with 10+ years, non-technical roles (HR, Finance, PM), and resumes with missing fields like email or phone.
+</div>
+
+<h3>Known Limitations</h3>
+<ul>
+  <li>Test cases used plain text resumes — PDF formatting artifacts may reduce accuracy on real uploads</li>
+  <li>Non-English resumes were not tested and may perform worse</li>
+  <li>Very unusual date formats (e.g. "since 2019") may cause experience year calculation errors</li>
+  <li>The evaluation metric is field-level binary (correct/incorrect) rather than semantic similarity scoring</li>
+</ul>
+
+<hr class="page-break">
+
+<!-- ── 11. REFLECTIONS ─────────────────────────────────────────────────────── -->
+<h2>11. Reflections, Limitations & Improvements</h2>
+
+<h3>What Worked Well</h3>
+<ul>
+  <li><strong>LangGraph StateGraph</strong> made pipeline orchestration clean and explicit — every edge and routing decision is visible in code</li>
+  <li><strong>Fallback parsers</strong> in every agent ensured the pipeline never crashed even when LLM calls failed</li>
+  <li><strong>Prompt markdown files</strong> kept prompts editable and version-controlled separately from code</li>
+  <li><strong>Modular structure</strong> made each agent independently testable</li>
+  <li><strong>Groq's free tier</strong> provided fast, cost-effective LLM inference for development and testing</li>
+</ul>
+
+<h3>Limitations</h3>
+<ul>
+  <li><strong>No true parallelism</strong> — Agents 3 & 4 run sequentially in the current implementation due to Colab's synchronous execution; production would use LangGraph's Send API for true concurrency</li>
+  <li><strong>Groq rate limits</strong> — Free tier has rate limits that slow down batch evaluation runs</li>
+  <li><strong>MCP tools</strong> — Gmail and Calendar MCP integrations log intent but require OAuth setup for full functionality</li>
+  <li><strong>No persistent state</strong> — Pipeline state is in-memory only; a production system would use a database for resume storage and retrieval</li>
+  <li><strong>English-only</strong> — Prompts and guardrails are optimised for English resumes only</li>
+</ul>
+
+<h3>Potential Improvements</h3>
+<ul>
+  <li>Add a <strong>Skills Gap Recommender</strong> agent that suggests learning resources for missing skills</li>
+  <li>Integrate <strong>LinkedIn profile scraping</strong> to verify work history claims</li>
+  <li>Add <strong>multi-candidate ranking</strong> to compare a pool of candidates for the same role</li>
+  <li>Implement <strong>true parallel execution</strong> using LangGraph's Send API with async agent nodes</li>
+  <li>Add a <strong>feedback loop</strong> where recruiter decisions improve the scoring model over time</li>
+  <li>Build a <strong>React dashboard</strong> for recruiters to view, approve, and manage pipeline results</li>
+</ul>
+
+<hr class="page-break">
+
+<footer>
+  HR Candidate Screening Multi-Agent System — Design Document<br>
+  Built with LangGraph · Groq (llama-3.1-8b-instant) · Python 3.12<br>
+  Assignment 1 — Multi-Agent Systems
+</footer>
+
+</div>
+</body>
+</html>

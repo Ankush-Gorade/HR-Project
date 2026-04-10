@@ -1,0 +1,262 @@
+[
+  {
+    "id": 1,
+    "input": "John Smith | john@email.com | +91-9876543210\nSkills: Python, Django, PostgreSQL, Docker, AWS\nExperience:\n- Tech Corp (2020-2023): Senior Developer\n- StartupXYZ (2019-2020): Junior Developer\nEducation: B.Tech CSE, IIT Delhi, 2019",
+    "expected": {
+      "name": "John Smith",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 3.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 2,
+    "input": "Priya Sharma | priya@company.com\nSkills: Java, Spring Boot, Kubernetes, Terraform, CI/CD, Docker\nWork: Google (2021-present) Staff Engineer, Facebook (2018-2021) SDE2\nMBA Finance IIM Ahmedabad 2018\nCertifications: AWS Solutions Architect",
+    "expected": {
+      "name": "Priya Sharma",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 3,
+    "input": "Rahul Mehta | rahul@email.com | Pune\nPython Developer 4 years\nSkills: Python, FastAPI, MySQL, Redis, Git\nFlipkart (2020-2024): Backend Engineer\nB.Tech VJTI Mumbai 2020",
+    "expected": {
+      "name": "Rahul Mehta",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 1,
+      "total_experience_years_min": 3.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 4,
+    "input": "Anita Desai\nML Engineer 6 years\nSkills: Python, TensorFlow, PyTorch, Scikit-learn, Spark, Airflow\nAmazon (2021-present): Senior ML Engineer\nMicrosoft (2018-2021): ML Engineer\nM.Tech AI IIT Madras 2018",
+    "expected": {
+      "name": "Anita Desai",
+      "skills_count_min": 5,
+      "has_email": false,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 5,
+    "input": "Vikram Nair | vikram@gmail.com | Hyderabad\nDevOps Engineer\nSkills: Docker, Kubernetes, Terraform, Jenkins, AWS, GCP, Ansible\nZomato (2022-present): DevOps Lead\nOla (2019-2022): DevOps Engineer\nInfosys (2017-2019): Systems Engineer\nB.Tech ECE Osmania University 2017",
+    "expected": {
+      "name": "Vikram Nair",
+      "skills_count_min": 6,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 3,
+      "total_experience_years_min": 6.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 6,
+    "input": "Sneha Kulkarni | sneha.k@outlook.com\nData Analyst\nSkills: SQL, Python, Tableau, Power BI, Excel, R\nPaytm (2021-present): Senior Data Analyst\nHDFC Bank (2019-2021): Data Analyst\nB.Com Statistics Pune University 2019",
+    "expected": {
+      "name": "Sneha Kulkarni",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 4.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 7,
+    "input": "Arjun Patel | arjun.p@email.com\nFresh graduate looking for first job\nSkills: Python, HTML, CSS\nInternship local startup (2023 2 months)\nB.Tech CSE Gujarat University 2023",
+    "expected": {
+      "name": "Arjun Patel",
+      "skills_count_min": 2,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 1,
+      "total_experience_years_min": 0.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 8,
+    "input": "Meera Iyer | meera@techcorp.com | Chennai\nFull Stack Developer 8 years\nSkills: React, Node.js, TypeScript, MongoDB, PostgreSQL, Docker, AWS, GraphQL\nThoughtWorks (2019-present): Lead Developer\nCognizant (2016-2019): Senior Developer\nWipro (2015-2016): Developer\nB.Tech IT Anna University 2015",
+    "expected": {
+      "name": "Meera Iyer",
+      "skills_count_min": 6,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 3,
+      "total_experience_years_min": 7.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 9,
+    "input": "Karan Shah | karan.shah@pm.com\nProduct Manager\nSkills: Product Strategy, Agile, Scrum, JIRA, SQL, Analytics\nUber India (2020-present): Senior PM\nBookMyShow (2017-2020): Product Manager\nMBA IIM Calcutta 2017",
+    "expected": {
+      "name": "Karan Shah",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 10,
+    "input": "Divya Menon | divya@email.com | Bangalore\nCloud Architect 10 years\nSkills: AWS, Azure, GCP, Terraform, Kubernetes, Docker, Python\nTCS (2018-present): Cloud Architect\nAccenture (2014-2018): Cloud Engineer\nB.Tech CSE Calicut University 2013",
+    "expected": {
+      "name": "Divya Menon",
+      "skills_count_min": 5,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 8.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 11,
+    "input": "Rohan Joshi | rohan@email.com\nSecurity Engineer\nSkills: Penetration Testing, Python, Bash, Metasploit, Burp Suite\nStartup (2022-present): Security Engineer\nB.Tech CSE 2022",
+    "expected": {
+      "name": "Rohan Joshi",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 1,
+      "total_experience_years_min": 1.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 12,
+    "input": "Pooja Agarwal\nHR Manager\nSkills: Recruitment, HRIS, Employee Relations, Performance Management\nInfrasoft (2019-present): HR Manager\nDeloitte (2016-2019): HR Business Partner\nMBA HR Symbiosis 2016",
+    "expected": {
+      "name": "Pooja Agarwal",
+      "skills_count_min": 3,
+      "has_email": false,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 13,
+    "input": "Nikhil Gupta | nikhil@email.com | Delhi\nBlockchain Developer\nSkills: Solidity, Ethereum, Web3.js, Python, JavaScript, Smart Contracts\nPolygon (2021-present): Blockchain Engineer\nStartup (2020-2021): Junior Dev\nB.Tech DTU Delhi 2020",
+    "expected": {
+      "name": "Nikhil Gupta",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 3.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 14,
+    "input": "Sanjana Reddy | sanjana@ds.com | Hyderabad\nData Scientist\nSkills: Python, R, Machine Learning, Deep Learning, NLP, SQL\nGoogle (2022-present): Data Scientist\nFacebook (2020-2022): ML Engineer\nMicrosoft (2018-2020): Data Analyst\nM.Tech CS IIT Hyderabad 2018",
+    "expected": {
+      "name": "Sanjana Reddy",
+      "skills_count_min": 5,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 3,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 15,
+    "input": "Amit Trivedi | amit.t@email.com\nJust graduated no experience\nSkills: Java, Python\nB.Tech CSE 2024",
+    "expected": {
+      "name": "Amit Trivedi",
+      "skills_count_min": 1,
+      "has_email": true,
+      "has_experience": false,
+      "experience_count": 0,
+      "total_experience_years_min": 0.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 16,
+    "input": "Riya Singh | riya.singh@fintech.com | Mumbai\nFinancial Analyst\nSkills: Excel, VBA, Python, SQL, Bloomberg Terminal, Financial Modeling\nJPMorgan (2021-present): Associate\nICICI Bank (2019-2021): Analyst\nCA ICAI 2019, B.Com Mumbai University 2016",
+    "expected": {
+      "name": "Riya Singh",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 4.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 17,
+    "input": "Aditya Kumar | aditya@email.com\nSoftware Engineer 3 years\nSkills: Go, Rust, Python, gRPC, Kafka, Redis, Kubernetes\nStripe (2021-present): SWE\nB.Tech CSE IIT Roorkee 2021",
+    "expected": {
+      "name": "Aditya Kumar",
+      "skills_count_min": 5,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 1,
+      "total_experience_years_min": 2.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 18,
+    "input": "Kavitha Nair | kavitha@qa.com | Bangalore\nQA Engineer\nSkills: Selenium, Python, TestNG, JIRA, Postman, SQL, CI/CD\nInfosys (2019-present): Senior QA Engineer\nCapgemini (2017-2019): QA Engineer\nB.Tech IT Calicut University 2017",
+    "expected": {
+      "name": "Kavitha Nair",
+      "skills_count_min": 5,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 19,
+    "input": "Suresh Babu | suresh@email.com\nEmbedded Systems Engineer\nSkills: C, C++, Python, RTOS, ARM, IoT, MATLAB\nBosch (2018-present): Senior Embedded Engineer\nL&T Technology (2015-2018): Embedded Engineer\nB.Tech ECE Andhra University 2015",
+    "expected": {
+      "name": "Suresh Babu",
+      "skills_count_min": 5,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 7.0,
+      "has_education": true
+    }
+  },
+  {
+    "id": 20,
+    "input": "Nandini Rao | nandini@email.com | Pune\nScrum Master\nSkills: Scrum, Kanban, SAFe, JIRA, Confluence, Coaching\nTata Consultancy (2020-present): Scrum Master\nPersistent Systems (2017-2020): Project Coordinator\nPMP Certified, MBA Operations 2017",
+    "expected": {
+      "name": "Nandini Rao",
+      "skills_count_min": 4,
+      "has_email": true,
+      "has_experience": true,
+      "experience_count": 2,
+      "total_experience_years_min": 5.0,
+      "has_education": true
+    }
+  }
+]

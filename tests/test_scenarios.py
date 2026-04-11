@@ -11,7 +11,7 @@ tests/test_scenarios.py
 
 import sys
 import os
-sys.path.insert(0, '/content/hr_screening')
+sys.path.insert(0, '/content/HR-Project')
 
 from pipeline.orchestrator import run_pipeline
 

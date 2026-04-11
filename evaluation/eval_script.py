@@ -265,7 +265,7 @@ def print_failure_analysis(results: list):
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def run_evaluation():
-    dataset_path = "/content/hr_screening/evaluation/eval_dataset.json"
+    dataset_path = "/content/HR-Project/evaluation/eval_dataset.json"
     print(f"\n🔬 Loading evaluation dataset from {dataset_path}...")
     dataset = load_dataset(dataset_path)
     print(f"   Loaded {len(dataset)} test cases\n")

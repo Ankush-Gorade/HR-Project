@@ -15,7 +15,7 @@ Orchestration role: CONDITIONAL ROUTING gate.
 """
 
 import os
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from utils.guardrails import validate_candidate_input
 from utils.helpers import extract_json_from_llm, utc_now_iso, load_prompt
@@ -54,9 +54,8 @@ def run_input_guard(state: dict) -> dict:
     # ── Step 2: LLM-based semantic validation ────────────────────────────────
     try:
         prompt_template = load_prompt("input_guard.md")
-        llm = ChatOllama(
-            model=state.get("llm_model", "llama3.2"),
-            base_url="https://abc123.ngrok-free.app",
+        llm = ChatGroq(
+            model=state.get("llm_model", "llama-3.1-8b-instant"),
             temperature=0.0,
         )
 

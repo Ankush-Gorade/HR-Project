@@ -13,7 +13,7 @@ Dataset: 20 manually curated resume parsing test cases
 import json
 import sys
 import os
-sys.path.insert(0, '/content/hr_screening')
+sys.path.insert(0, '/content/HR-Project')
 
 from agents.resume_parser_agent import run_resume_parser
 

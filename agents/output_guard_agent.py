@@ -21,7 +21,7 @@ Orchestration role: Final node after fan-in aggregation
 
 import os
 from datetime import datetime, timezone
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from utils.helpers import (
     extract_json_from_llm, load_prompt,
@@ -72,10 +72,9 @@ def run_output_guard(state: dict) -> dict:
         prompt_template = _default_prompt()
 
     try:
-        llm = ChatOllama(
-            model=state.get("llm_model", "llama3.2"),
-            base_url="https://abc123.ngrok-free.app",
-            temperature=0.0,
+        llm = ChatGroq(
+            model=state.get("llm_model", "llama-3.1-8b-instant"),
+            temperature=0.1,
         )
 
         user_message = f"""

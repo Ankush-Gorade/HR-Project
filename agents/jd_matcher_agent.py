@@ -16,7 +16,7 @@ Orchestration role: Parallel fan-out node (runs concurrently with Agent 4)
 """
 
 import os
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from utils.helpers import extract_json_from_llm, load_prompt, normalise_score
 from utils.tracing import get_logger
@@ -85,9 +85,8 @@ def run_jd_matcher(state: dict) -> dict:
         prompt_template = _default_prompt()
 
     try:
-        llm = ChatOllama(
-            model=state.get("llm_model", "llama3.2"),
-            base_url="https://abc123.ngrok-free.app",
+        llm = ChatGroq(
+            model=state.get("llm_model", "llama-3.1-8b-instant"),
             temperature=0.0,
         )
 

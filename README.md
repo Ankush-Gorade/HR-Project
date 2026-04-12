@@ -1,5 +1,5 @@
 HR Candidate Screening — Multi-Agent System
-> **Assignment 1 | Multi-Agent Systems | LangGraph | Domain: Human Resources**
+Multi-Agent Systems | LangGraph | Domain: Human Resources**
 An end-to-end HR candidate screening pipeline that automates resume evaluation, job description matching, behavioral analysis, and screening report generation using 5 specialised sub-agents orchestrated with LangGraph.
 ---
 Demo

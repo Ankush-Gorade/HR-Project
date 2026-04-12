@@ -129,7 +129,7 @@ def _fallback_parse(resume_text: str) -> dict:
     """
     import re
     common_skills = [
-        "Python", "Java", "JavaScript", "SQL", "Scala",
+        "Python", "Java", "JavaScript", "SQL", "R", "Scala",
         "Docker", "Kubernetes", "AWS", "GCP", "Azure",
         "TensorFlow", "PyTorch", "Spark", "Hadoop",
         "Django", "FastAPI", "Spring", "React", "Node.js",

@@ -53,7 +53,12 @@ def run_input_guard(state: dict) -> dict:
 
     # ── Step 2: LLM-based semantic validation ────────────────────────────────
     try:
-        prompt_template = load_prompt("input_guard.md")
+        _abs_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "prompts", "input_guard.md")
+        if os.path.exists(_abs_path):
+            with open(_abs_path) as _f:
+                prompt_template = _f.read()
+        else:
+            prompt_template = load_prompt("input_guard.md")
         llm = ChatGroq(
             model=state.get("llm_model", "llama-3.1-8b-instant"),
             temperature=0.0,

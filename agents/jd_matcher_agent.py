@@ -80,8 +80,15 @@ def run_jd_matcher(state: dict) -> dict:
 
     # ── Step 2: Load prompt and call LLM ─────────────────────────────────────
     try:
-        prompt_template = load_prompt("jd_matcher.md")
-    except FileNotFoundError:
+        # Try absolute path first, then relative
+        _prompt_file = "jd_matcher.md"
+        _abs_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "prompts", _prompt_file)
+        if os.path.exists(_abs_path):
+            with open(_abs_path) as _f:
+                prompt_template = _f.read()
+        else:
+            prompt_template = load_prompt(_prompt_file)
+    except (FileNotFoundError, Exception):
         prompt_template = _default_prompt()
 
     try:

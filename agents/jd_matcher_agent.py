@@ -152,19 +152,9 @@ def _fallback_score(candidate_skills: list, job_description: str, exp_years: flo
     Simple keyword-based fallback scoring if LLM fails.
     Counts skill keyword overlaps between resume and JD.
     """
-    # Filter out single-char and non-tech skills
-    clean_skills = [
-        s for s in candidate_skills
-        if len(s) >= 3
-        and s.lower() not in [
-            'cooking', 'driving', 'gardening', 'cleaning', 'walking',
-            'running', 'reading', 'writing', 'playing', 'talking'
-        ]
-    ]
-
     jd_lower = job_description.lower()
-    matched = [s for s in clean_skills if s.lower() in jd_lower]
-    match_pct = (len(matched) / max(len(clean_skills), 1)) * 100 if clean_skills else 0.0
+    matched = [s for s in candidate_skills if s.lower() in jd_lower]
+    match_pct = (len(matched) / max(len(candidate_skills), 1)) * 100
 
     return {
         "required_skills": [],
@@ -173,8 +163,8 @@ def _fallback_score(candidate_skills: list, job_description: str, exp_years: flo
         "missing_skills": [],
         "skill_match_score": normalise_score(match_pct),
         "experience_match_score": min(exp_years * 12, 100),
-        "education_match_score": normalise_score(min(exp_years * 10, 70)) if exp_years > 0 else 0.0,
-        "overall_jd_score": normalise_score(match_pct),
+        "education_match_score": 70.0,
+        "overall_jd_score": normalise_score(match_pct * 0.6 + 30),
         "match_summary": f"Fallback score — {len(matched)} skills matched",
     }
 

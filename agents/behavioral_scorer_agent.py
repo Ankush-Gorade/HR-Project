@@ -1,3 +1,4 @@
+import os
 """
 agents/behavioral_scorer_agent.py
 ──────────────────────────────────
@@ -41,8 +42,15 @@ def run_behavioral_scorer(state: dict) -> dict:
 
     # ── Load prompt ───────────────────────────────────────────────────────────
     try:
-        prompt_template = load_prompt("behavioral_scorer.md")
-    except FileNotFoundError:
+        # Try absolute path first, then relative
+        _prompt_file = "behavioral_scorer.md"
+        _abs_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "prompts", _prompt_file)
+        if os.path.exists(_abs_path):
+            with open(_abs_path) as _f:
+                prompt_template = _f.read()
+        else:
+            prompt_template = load_prompt(_prompt_file)
+    except (FileNotFoundError, Exception):
         prompt_template = _default_prompt()
 
     # ── Call LLM ─────────────────────────────────────────────────────────────

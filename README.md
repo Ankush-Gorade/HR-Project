@@ -3,7 +3,7 @@ HR Candidate Screening — Multi-Agent System
 An end-to-end HR candidate screening pipeline that automates resume evaluation, job description matching, behavioral analysis, and screening report generation using 5 specialised sub-agents orchestrated with LangGraph.
 ---
 Demo
-![Pipeline Architecture](docs/architecture.png)
+
 Run the interactive Streamlit UI from Google Colab — paste a resume, paste a job description, get a full screening report in ~30 seconds.
 ---
 Architecture

@@ -1,9 +1,21 @@
-langchain-groq
-langchain-community
-langchain
-langgraph
-pydantic
-python-dotenv
-duckduckgo-search
-tavily-python
-streamlit
+# ── Core LLM & Agent Framework ──────────────────────────────────────────────
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
+langchain-community>=0.3.0
+
+# ── Tools ────────────────────────────────────────────────────────────────────
+duckduckgo-search>=6.0.0
+tavily-python>=0.3.0
+
+# ── Data Validation ──────────────────────────────────────────────────────────
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# ── Evaluation ───────────────────────────────────────────────────────────────
+pandas>=2.0.0
+
+# ── UI ───────────────────────────────────────────────────────────────────────
+streamlit>=1.35.0
+pyngrok>=7.0.0
